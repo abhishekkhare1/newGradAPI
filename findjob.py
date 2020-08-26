@@ -14,10 +14,19 @@ def getNewDate():
     response = requests.get(url = COMMIT_URL).json()
     return str(response["commit"]["author"]["date"])
 
-def printReadMe():
+def parseReadMe():
     response = requests.get(url = README_URL).json()
-    readme = base64.b64decode(response['content'])
-    print(readme)
+    readme = str(base64.b64decode(response['content']))
+    
+    #Parse readme to get last company in table
+    body,_,_ = readme.rpartition('\\n')
+    _,_,end = body.rpartition('\\n')
+
+    #Get the company name and link to application
+    company,_,linkEnd = end.lstrip('| [').partition(']')
+    link,_,_ = linkEnd.lstrip('(').partition(')')
+    
+    return company, link
 
 def getOldDate():
     f = open("date", "r")
@@ -49,12 +58,13 @@ def sendText(message):
 def main():
     newDate = getNewDate()
     oldDate = getOldDate()
-    printReadMe()
     
     if newDate > oldDate:
         writeOldDate(newDate)
-        sendText("updated")
-        print("updated")
+        company, link = parseReadMe()
+        message = company + ' added a New Grad role\n' + link
+        sendText(message)
+        print(message)
 
 
 main()
