@@ -2,14 +2,22 @@
 import requests
 import json
 import os
+import base64
 from twilio.rest import Client
 
 
-URL = "https://api.github.com/repos/Pitt-CSC/NewGrad-2021/commits/master"
+COMMIT_URL = "https://api.github.com/repos/Pitt-CSC/NewGrad-2021/commits/master"
+README_URL = "https://api.github.com/repos/Pitt-CSC/NewGrad-2021/readme"
 
+#GET /repos/:owner/:repo/git/blobs/:file_sha
 def getNewDate():
-    response = requests.get(url = URL).json()
+    response = requests.get(url = COMMIT_URL).json()
     return str(response["commit"]["author"]["date"])
+
+def printReadMe():
+    response = requests.get(url = README_URL).json()
+    readme = base64.b64decode(response['content'])
+    print(readme)
 
 def getOldDate():
     f = open("date", "r")
@@ -41,6 +49,7 @@ def sendText(message):
 def main():
     newDate = getNewDate()
     oldDate = getOldDate()
+    printReadMe()
     
     if newDate > oldDate:
         writeOldDate(newDate)
