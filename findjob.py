@@ -17,33 +17,6 @@ def getNewDate():
     return str(response["commit"]["author"]["date"])
 
 
-#Reads file to find date from last polled commit
-def getOldDate():
-    f = open("date", "r")
-    oldDate = f.read()
-    f.close()
-    return oldDate
-
-
-#Writes date to file if newer
-def writeOldDate(newDate):
-    f = open("date", "w")
-    f.write(newDate)
-    f.close()
-
-#Reads last company from file
-def getLastCompany():
-    f = open("lastCompany", "r")
-    lastCompany = f.read()
-    f.close()
-    return lastCompany
-
-#Writes most recent company to lastCompany
-def writeLastCompany(company):
-    f = open("lastCompany", "w")
-    f.write(company)
-    f.close()
-
 #Makes a request to the repo readme
 #Parses repo to get list of recent company names and links
 def parseReadMe():
@@ -72,9 +45,43 @@ def parseReadMe():
         company,_,linkEnd = end.lstrip('| [').partition(']')
         link,_,_ = linkEnd.lstrip('(').partition(')')
     
-    writeLastCompany(companyList[0])
-    
+    if len(companyList) > 0:
+        setLastCompany(companyList[0])
+
     return companyList, linkList
+
+
+#Reads content from file
+def readFile(fileName):
+    f = open(fileName, "r")
+    content = f.read()
+    f.close()
+    return content
+
+
+#Writes content to file
+def writeFile(fileName, content):
+    f = open(fileName, "w")
+    f.write(content)
+    f.close()
+
+
+#Gets last commit date
+def getOldDate():
+    return readFile('date')
+
+#Writes the new date to file
+def setOldDate(newDate):
+    writeFile('date', newDate)
+
+
+#Gets last company
+def getLastCompany():
+    return readFile('lastCompany')
+
+#Writes the most recent company to lastCompany
+def setLastCompany(company):
+    writeFile('lastCompany', company)
 
 
 #Texts my number with a message using the Twilio API
@@ -102,7 +109,7 @@ def main():
     oldDate = getOldDate()
     
     if newDate > oldDate:
-        writeOldDate(newDate)
+        setOldDate(newDate)
         companyList, linkList = parseReadMe()
         length = len(companyList)
 
