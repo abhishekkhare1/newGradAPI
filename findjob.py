@@ -23,6 +23,10 @@ def writeOldDate(newDate):
     f.close()
 
 def sendText(message):
+    
+    if len(message) >= 160:
+        return
+
     account_sid = os.environ['TWILIO_ACCOUNT_SID']
     auth_token = os.environ['TWILIO_AUTH_TOKEN']
     client = Client(account_sid, auth_token)
@@ -30,8 +34,8 @@ def sendText(message):
     message = client.messages \
                 .create(
                      body=message,
-                     from_='+12058436954',
-                     to='+15126952412'
+                     from_=os.environ['MY_TWILIO_NUMBER'],
+                     to=os.environ['MY_PHONE_NUMBER']                   
                  )
 
 def main():
