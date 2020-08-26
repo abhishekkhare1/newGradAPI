@@ -77,6 +77,8 @@ def main():
         message = company + ' added a New Grad role\n' + link
         sendText(message)
         print(message)
+    else:
+        print('no updates')
 
 
 main()
