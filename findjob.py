@@ -144,7 +144,7 @@ def main():
     polling2.poll(
     lambda: str(requests.get(url = COMMIT_URL).json()["commit"]["author"]["date"]),
     check_success=is_new_commit,
-    step=60,
+    step=600,
     poll_forever=True)
 
 
