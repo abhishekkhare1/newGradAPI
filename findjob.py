@@ -39,8 +39,7 @@ def parse_read_me():
     #Get the company name and link to application
     company,_,linkEnd = end.lstrip('| [').partition(']')
     link,_,_ = linkEnd.lstrip('(').partition(')')
-
-    while company != lastCompany:
+    while company != lastCompany and len(link) > 10:
         companyList.append(company)
         linkList.append(link)
         body,_,end = body.rpartition('\\n')
